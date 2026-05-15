@@ -1,1 +1,705 @@
-PLACEHOLDER
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AML Open Framework — Demo &amp; Resources</title>
+<meta name="description" content="An anti-money-laundering program you can replay. Two audience-tailored decks (board · technical), two videos, primary-source research, full source code under MIT.">
+<meta property="og:title" content="AML Open Framework — Demo &amp; Resources">
+<meta property="og:description" content="An AML program your regulator can replay. Board deck, technical deck, primary-source research, full open-source code.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..700;1,8..60,300..700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f7f4;
+  --surface:#ffffff;
+  --border:#e5e2db;
+  --text:#1a1a18;
+  --muted:#6b6860;
+  --accent:#1a472a;
+  --accent-light:#e8f0eb;
+  --warn:#7c3c00;
+  --warn-bg:#fff8f0;
+  --mono:#2d2d2b;
+  --radius:10px;
+  --max:1080px;
+}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.6;min-height:100vh}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 1.5rem}
+.nav-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;gap:0.25rem;height:52px}
+.nav-brand{font-weight:700;font-size:0.9rem;letter-spacing:-0.01em;color:var(--text);text-decoration:none;margin-right:auto}
+.nav-link{font-size:0.85rem;font-weight:500;color:var(--muted);text-decoration:none;padding:0.35rem 0.75rem;border-radius:6px;transition:background 0.15s,color 0.15s}
+.nav-link:hover,.nav-link.active{background:var(--accent-light);color:var(--accent)}
+.nav-link.external{display:flex;align-items:center;gap:0.3rem}
+
+/* VIEWER OVERLAY */
+#viewer{display:none;position:fixed;inset:0;z-index:200;background:#000;flex-direction:column}
+#viewer.open{display:flex}
+.viewer-bar{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 1rem;background:#111;border-bottom:1px solid #333;flex-shrink:0}
+.viewer-title{font-size:0.8rem;color:#ccc;font-weight:500;margin-right:auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.viewer-close{background:none;border:1px solid #444;color:#ccc;font-size:0.8rem;padding:0.3rem 0.75rem;border-radius:5px;cursor:pointer;font-family:inherit;transition:background 0.15s}
+.viewer-close:hover{background:#333;color:#fff}
+#viewer iframe{flex:1;border:none;width:100%;background:#fff}
+
+/* PAGES */
+.page{display:none;max-width:var(--max);margin:0 auto;padding:2.5rem 1.5rem 4rem}
+.page.active{display:block}
+
+/* HOME PAGE */
+.hero{padding:3.5rem 0 2rem}
+.hero-eyebrow{font-size:0.75rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:1rem}
+.hero-h1{font-family:'Source Serif 4',Georgia,serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:600;line-height:1.18;letter-spacing:-0.02em;max-width:780px}
+.hero-h1 em{font-style:italic;color:var(--accent)}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:600px;margin-top:1.2rem;line-height:1.65}
+.hero-cta{display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:2rem}
+.btn{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.875rem;font-weight:600;padding:0.65rem 1.25rem;border-radius:8px;text-decoration:none;transition:all 0.15s;cursor:pointer;border:none;font-family:inherit}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:#15391f;transform:translateY(-1px)}
+.btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent)}
+
+/* VALUE PROPS */
+.vp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin:2.5rem 0}
+.vp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+.vp-icon{font-size:1.5rem;margin-bottom:0.75rem}
+.vp-h{font-size:0.95rem;font-weight:700;margin-bottom:0.4rem}
+.vp-p{font-size:0.875rem;color:var(--muted);line-height:1.6}
+
+/* SECTION LABEL */
+.section-label{font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:1.25rem;padding-top:2.5rem;border-top:1px solid var(--border)}
+
+/* DECK PICKER */
+.deck-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;margin-bottom:2.5rem}
+.deck-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:box-shadow 0.15s,transform 0.15s;text-align:left}
+.deck-card:hover{box-shadow:0 4px 20px rgba(0,0,0,0.08);transform:translateY(-2px)}
+.deck-thumb{width:100%;aspect-ratio:16/9;background:var(--accent-light);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.deck-thumb-img{width:100%;height:100%;object-fit:cover}
+.deck-thumb-placeholder{font-size:2.5rem;opacity:0.4}
+.play-badge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(26,71,42,0.85);color:#fff;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;backdrop-filter:blur(4px);transition:background 0.15s}
+.deck-card:hover .play-badge{background:rgba(26,71,42,0.95)}
+.deck-body{padding:1.25rem}
+.deck-label{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.3rem}
+.deck-title{font-size:1rem;font-weight:700;margin-bottom:0.35rem}
+.deck-desc{font-size:0.825rem;color:var(--muted);line-height:1.55;margin-bottom:1rem}
+.deck-links{display:flex;flex-wrap:wrap;gap:0.5rem}
+.deck-link{font-size:0.775rem;font-weight:600;color:var(--accent);text-decoration:none;padding:0.3rem 0.7rem;border:1px solid var(--accent);border-radius:5px;transition:background 0.15s}
+.deck-link:hover{background:var(--accent);color:#fff}
+.deck-link.muted{color:var(--muted);border-color:var(--border)}
+.deck-link.muted:hover{background:var(--accent-light);border-color:var(--accent);color:var(--accent)}
+
+/* PROBLEM SECTION */
+.problem-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin:1.5rem 0}
+.problem-item{background:var(--warn-bg);border:1px solid #e8c99a;border-radius:8px;padding:1.25rem}
+.problem-q{font-size:0.8rem;font-weight:700;color:var(--warn);margin-bottom:0.4rem}
+.problem-a{font-size:0.825rem;color:var(--text);line-height:1.55}
+.problem-source{font-size:0.72rem;color:var(--muted);margin-top:0.5rem}
+
+/* ARCHITECTURE */
+.arch-layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin:1.5rem 0}
+.arch-layer{background:var(--surface);padding:1.25rem}
+.arch-num{font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem}
+.arch-name{font-size:0.95rem;font-weight:700;margin-bottom:0.4rem}
+.arch-desc{font-size:0.8rem;color:var(--muted);line-height:1.55}
+
+/* HOW IT WORKS */
+.steps{display:flex;flex-direction:column;gap:0;margin:1.5rem 0;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.step{display:grid;grid-template-columns:48px 1fr;gap:0;border-bottom:1px solid var(--border);background:var(--surface)}
+.step:last-child{border-bottom:none}
+.step-num{display:flex;align-items:flex-start;justify-content:center;padding:1rem 0;font-size:0.75rem;font-weight:700;color:var(--muted);background:var(--bg);border-right:1px solid var(--border)}
+.step-body{padding:1rem 1.25rem}
+.step-title{font-size:0.9rem;font-weight:700;margin-bottom:0.3rem}
+.step-desc{font-size:0.825rem;color:var(--muted);line-height:1.55}
+
+/* SIZES */
+.sizes-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin:1.5rem 0}
+.size-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:1.25rem}
+.size-name{font-size:0.85rem;font-weight:700;margin-bottom:0.25rem}
+.size-desc{font-size:0.8rem;color:var(--muted);line-height:1.5}
+
+/* BUILT ON */
+.tech-grid{display:flex;flex-wrap:wrap;gap:0.6rem;margin:1.5rem 0}
+.tech-tag{font-size:0.8rem;font-weight:500;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:0.35rem 0.8rem;color:var(--muted)}
+
+/* MORE CARDS (research, source) */
+.more-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem;margin:1.25rem 0}
+.more-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;text-decoration:none;color:var(--text);display:block;transition:box-shadow 0.15s,transform 0.15s;cursor:pointer}
+.more-card:hover{box-shadow:0 4px 18px rgba(0,0,0,0.07);transform:translateY(-2px);border-color:var(--accent)}
+.more-card .kind{font-size:0.7rem;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;color:var(--accent);margin-bottom:0.35rem}
+.more-card h4{font-size:0.925rem;font-weight:700;margin-bottom:0.4rem;line-height:1.35}
+.more-card p{font-size:0.8rem;color:var(--muted);line-height:1.55;margin-bottom:0.75rem}
+.more-card .link{font-size:0.75rem;font-weight:600;color:var(--accent)}
+
+/* NAV TABS for Business/Technical/Research */
+.aud-tabs{display:flex;gap:0.5rem;margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:0;position:relative}
+.aud-tab{font-size:0.875rem;font-weight:600;padding:0.65rem 1rem;border-radius:8px 8px 0 0;text-decoration:none;color:var(--muted);border:1px solid transparent;border-bottom:none;margin-bottom:-1px;transition:all 0.15s;cursor:pointer;background:none;font-family:inherit}
+.aud-tab.active{color:var(--accent);background:var(--surface);border-color:var(--border);border-bottom-color:var(--surface)}
+.aud-tab:hover:not(.active){color:var(--text)}
+
+/* DECK FORMAT TABS */
+.fmt-tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem}
+.fmt-tab{font-size:0.8rem;font-weight:600;padding:0.4rem 0.9rem;border-radius:6px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:inherit;transition:all 0.15s}
+.fmt-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.fmt-tab:hover:not(.active){border-color:var(--accent);color:var(--accent)}
+
+/* IFRAME VIEWER inside page */
+.deck-iframe-wrap{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--surface)}
+.deck-iframe-wrap iframe{width:100%;height:calc(100vh - 220px);min-height:500px;display:block;border:none}
+
+/* STATS BAR */
+.stats{display:flex;flex-wrap:wrap;gap:1.5rem;padding:1.25rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:2rem 0}
+.stat-item{display:flex;flex-direction:column;gap:0.15rem}
+.stat-val{font-size:1.4rem;font-weight:800;letter-spacing:-0.02em;color:var(--accent)}
+.stat-lbl{font-size:0.72rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+
+/* FOOTER */
+.site-footer{border-top:1px solid var(--border);padding:1.5rem;text-align:center;font-size:0.78rem;color:var(--muted)}
+.site-footer a{color:var(--muted);text-decoration:underline}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .hero-h1{font-size:1.8rem}
+  .deck-grid{grid-template-columns:1fr}
+  .page{padding:1.5rem 1rem 3rem}
+  .nav{padding:0 1rem}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#/">AML Open Framework</a>
+    <a class="nav-link" href="#/home">Home</a>
+    <a class="nav-link" href="#/business">Business</a>
+    <a class="nav-link" href="#/technical">Technical</a>
+    <a class="nav-link" href="#/research">Research</a>
+    <a class="nav-link external" href="https://github.com/tomqwu/aml_open_framework" target="_blank" rel="noopener">Source ↗</a>
+  </div>
+</nav>
+
+<!-- FULLSCREEN VIEWER OVERLAY -->
+<div id="viewer">
+  <div class="viewer-bar">
+    <span class="viewer-title" id="viewer-title">Loading…</span>
+    <button class="viewer-close" onclick="closeViewer()">✕ Close</button>
+  </div>
+  <iframe id="viewer-frame" src="" title="Content viewer" allowfullscreen></iframe>
+</div>
+
+<!-- HOME PAGE -->
+<div class="page" id="page-home">
+  <div class="hero">
+    <div class="hero-eyebrow">AML Open Framework · 2026</div>
+    <h1 class="hero-h1">An AML program your<br>regulator can <em>replay.</em></h1>
+    <p class="hero-sub">One versioned spec drives detection, case workflow, reporting, and an immutable audit ledger — so the examination ZIP is already on the shelf when the regulator walks in.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="#/business">Board briefing →</a>
+      <a class="btn btn-secondary" href="#/technical">Technical deck</a>
+      <a class="btn btn-secondary" href="https://github.com/tomqwu/aml_open_framework" target="_blank" rel="noopener">Source on GitHub ↗</a>
+    </div>
+  </div>
+
+  <div class="vp-grid">
+    <div class="vp-card">
+      <div class="vp-icon">🔗</div>
+      <div class="vp-h">Connect once. Validate forever.</div>
+      <p class="vp-p">9 connectors (CSV / Parquet / DuckDB / Snowflake / BigQuery / S3 / GCS / synthetic / ISO 20022 native). Every ingestion produces a schema contract and data-quality gate — no silent schema drift.</p>
+    </div>
+    <div class="vp-card">
+      <div class="vp-icon">🔍</div>
+      <div class="vp-h">Trace every alert. Down to the row.</div>
+      <p class="vp-p">7-link chain, source row → STR. source file path → schema hash → DuckDB table → rendered SQL → matched source rowids → alert → case → STR. Every link hash-stamped.</p>
+    </div>
+    <div class="vp-card">
+      <div class="vp-icon">📋</div>
+      <div class="vp-h">Examiner-defensible, without the vendor.</div>
+      <p class="vp-p">Apache 2.0. Runs inside your perimeter. No data egress. SHA-256 hash-chained decisions ledger. <code>aml verify-decisions</code> replays any historical run byte-for-byte.</p>
+    </div>
+  </div>
+
+  <div class="section-label">Pick your deck</div>
+  <div class="deck-grid">
+    <div class="deck-card" onclick="openViewer('business/index.html', 'Board briefing · 12 exhibits · keyboard nav')">
+      <div class="deck-thumb">
+        <div class="deck-thumb-placeholder">📊</div>
+        <div class="play-badge">▶</div>
+      </div>
+      <div class="deck-body">
+        <div class="deck-label">Board briefing</div>
+        <div class="deck-title">The AML case for the C-suite.</div>
+        <p class="deck-desc">12 exhibits. Enforcement context, the four-layer framework, deployment posture, and the examination ZIP. Audience: CCO / CFO / Board risk committee.</p>
+        <div class="deck-links">
+          <a class="deck-link" href="#/business">HTML slides</a>
+          <a class="deck-link muted" onclick="event.stopPropagation()" href="business/aml-open-framework-board.pdf" target="_blank">PDF · 12 pp</a>
+        </div>
+      </div>
+    </div>
+    <div class="deck-card" onclick="openViewer('technical/index.html', 'Technical deck · 22 slides · keyboard nav')">
+      <div class="deck-thumb">
+        <div class="deck-thumb-placeholder">⚙️</div>
+        <div class="play-badge">▶</div>
+      </div>
+      <div class="deck-body">
+        <div class="deck-label">Technical deck</div>
+        <div class="deck-title">How the framework works.</div>
+        <p class="deck-desc">22 slides. Architecture deep-dive, spec reference, data connectors, audit ledger, deployment shapes, CLI tour. Audience: engineering, 2LoD, MRM.</p>
+        <div class="deck-links">
+          <a class="deck-link" href="#/technical">HTML slides</a>
+          <a class="deck-link muted" onclick="event.stopPropagation()" href="technical/aml-open-framework-technical.pdf" target="_blank">PDF · 22 pp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">The problem regulators actually find</div>
+  <div class="problem-grid">
+    <div class="problem-item">
+      <div class="problem-q">Why did the TD fine land at $3.09B?</div>
+      <p class="problem-a">Not missed typologies — missing evidence that controls were operating. The bank couldn't replay what happened.</p>
+      <div class="problem-source">FinCEN TD Bank consent order · Oct 2024 · $3.09B</div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-q">What does the FCA actually ask for?</div>
+      <p class="problem-a">"Show us the governance trail." Not the alert count — the decision log, with timestamps, reviewer IDs, and the rule version that fired.</p>
+      <div class="problem-source">FCA Dear-CEO Letter · Mar 2024</div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-q">What's the real cost of AML?</div>
+      <p class="problem-a">$61 billion in the United States and Canada. 57% labour, 40% tech, 3% other. Most of the labour cost is evidence reconstruction.</p>
+      <div class="problem-source">LexisNexis True Cost · Feb 2024</div>
+    </div>
+    <div class="problem-item">
+      <div class="problem-q">Is the transaction monitoring spend worth it?</div>
+      <p class="problem-a">FinCEN Sep 2025 RFI framed it: "is the juice worth the squeeze?" The answer depends on whether you can measure effectiveness — which requires a spec.</p>
+      <div class="problem-source">FCA Mar 2024 · FinCEN Apr 2026 NPRM · SR 26-2 effective Apr 2026</div>
+    </div>
+  </div>
+
+  <div class="section-label">What we built — one Manifest, four layers</div>
+  <div class="arch-layers">
+    <div class="arch-layer">
+      <div class="arch-num">Layer 1</div>
+      <div class="arch-name">Policy</div>
+      <p class="arch-desc">Program metadata, data contracts, detection rules, workflow, reporting — authored as one versioned <code>aml.yaml</code>.</p>
+    </div>
+    <div class="arch-layer">
+      <div class="arch-num">Layer 2</div>
+      <div class="arch-name">Generation</div>
+      <p class="arch-desc">The spec generates SQL, DAG stubs, data-quality tests, MRM dossiers, control matrices. Spec drift is a CI failure, not a finding.</p>
+    </div>
+    <div class="arch-layer">
+      <div class="arch-num">Layer 3</div>
+      <div class="arch-name">Runtime</div>
+      <p class="arch-desc">Detectors fire, cases route, BOI refreshes, tuning lab backtests, examiner pack exports. All deterministic — same spec + same data = same output hashes.</p>
+    </div>
+    <div class="arch-layer">
+      <div class="arch-num">Layer 4</div>
+      <div class="arch-name">Evidence</div>
+      <p class="arch-desc">Immutable SHA-256 hash-chained <code>decisions.jsonl</code>. Spec / input / output / decision hashes. Replayed by Internal Audit byte-for-byte.</p>
+    </div>
+  </div>
+
+  <div class="section-label">How it works in five stages</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><div class="step-title">Author the Manifest</div><p class="step-desc">CCO / MLRO writes <code>aml.yaml</code> — data contracts, detection rules, workflow, reporting targets. Git PR, 2LoD review, merge.</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><div class="step-title">Generate artifacts</div><p class="step-desc"><code>aml validate</code> runs JSON Schema + Pydantic checks. Generators emit SQL, DAG stubs, DQ tests, MRM dossier, control matrix.</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><div class="step-title">Run detectors</div><p class="step-desc"><code>aml run</code> executes rules against your data source. DuckDB engine, deterministic output, SHA-256 hash of every decision written to ledger.</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body"><div class="step-title">Investigate &amp; close</div><p class="step-desc">Analysts open the dashboard — alert, KYC, network, sanctions, prior SARs already assembled. Supervisors route, SLA timers run, STR narrative drafted.</p></div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body"><div class="step-title">Export the exam pack</div><p class="step-desc"><code>aml audit-pack --jurisdiction CA-FINTRAC</code> builds the ZIP. Every regulator bundle carries the 7-link lineage chain inline. Auditor replays with <code>aml verify-decisions</code>.</p></div>
+    </div>
+  </div>
+
+  <div class="section-label">Same Manifest, four sizes</div>
+  <div class="sizes-grid">
+    <div class="size-card"><div class="size-name">Community bank</div><p class="size-desc">3 rules, CSV data source, Docker Compose, one analyst. Full audit trail from day one.</p></div>
+    <div class="size-card"><div class="size-name">Regional bank</div><p class="size-desc">12 rules, Postgres, Helm on K8s, 2LoD dashboard access, quarterly backtests.</p></div>
+    <div class="size-card"><div class="size-name">Schedule-I bank</div><p class="size-desc">50+ rules, Snowflake + S3, AKS with Entra ID / Key Vault, MRM model inventory, multi-jurisdiction exam packs.</p></div>
+    <div class="size-card"><div class="size-name">FinTech / EMI</div><p class="size-desc">Lean deployment, ISO 20022 native ingestion, travel-rule webhook adapters, VASP attribution, fast SAR turnaround.</p></div>
+  </div>
+
+  <div class="section-label">Examiner-defensible, without the vendor</div>
+  <div class="stats">
+    <div class="stat-item"><span class="stat-val">9</span><span class="stat-lbl">data connectors</span></div>
+    <div class="stat-item"><span class="stat-val">32</span><span class="stat-lbl">dashboard pages</span></div>
+    <div class="stat-item"><span class="stat-val">38</span><span class="stat-lbl">CLI commands</span></div>
+    <div class="stat-item"><span class="stat-val">2,000+</span><span class="stat-lbl">tests · all green</span></div>
+    <div class="stat-item"><span class="stat-val">5</span><span class="stat-lbl">jurisdictions</span></div>
+    <div class="stat-item"><span class="stat-val">10</span><span class="stat-lbl">example specs</span></div>
+    <div class="stat-item"><span class="stat-val">0</span><span class="stat-lbl">data leaves perimeter</span></div>
+  </div>
+
+  <div class="section-label">Built on</div>
+  <div class="tech-grid">
+    <span class="tech-tag">Python 3.10+</span>
+    <span class="tech-tag">FastAPI</span>
+    <span class="tech-tag">Streamlit</span>
+    <span class="tech-tag">DuckDB</span>
+    <span class="tech-tag">Pydantic v2</span>
+    <span class="tech-tag">JSON Schema</span>
+    <span class="tech-tag">Helm / K8s</span>
+    <span class="tech-tag">Terraform</span>
+    <span class="tech-tag">Azure Container Apps</span>
+    <span class="tech-tag">Microsoft Entra ID</span>
+    <span class="tech-tag">ISO 20022</span>
+    <span class="tech-tag">Apache 2.0</span>
+  </div>
+
+  <div class="section-label">Primary research &amp; source code</div>
+  <div class="more-grid">
+    <a class="more-card" href="#/research/process-pain">
+      <div class="kind">Research · 2026</div>
+      <h4>10 daily pain points an AML leader feels</h4>
+      <p>Primary-source-only synthesis of what CCOs and MLROs actually get stuck on — each pain anchored in FCA/FinCEN/OSFI/FINTRAC publication, not vendor whitepapers.</p>
+      <span class="link">research/process-pain → opens in viewer</span>
+    </a>
+    <a class="more-card" href="#/research/td-2024">
+      <div class="kind">Case study · 2024</div>
+      <h4>TD Bank: the $3.09B BSA enforcement</h4>
+      <p>The largest BSA enforcement of 2024 — what the consent order actually said, what failed, and what an evidence-first AML program would have changed.</p>
+      <span class="link">research/td-2024 → opens in viewer</span>
+    </a>
+    <a class="more-card" href="#/research/fintech">
+      <div class="kind">Research · FinTech</div>
+      <h4>FinTech AML reality — 2024-26 enforcement</h4>
+      <p>The six to eight pain points unique to FinTech / EMI / MSB / VASP MLROs, each anchored in a 2024-26 enforcement action (Block/Cash App, Starling, Coinbase, Robinhood Crypto).</p>
+      <span class="link">research/fintech → opens in viewer</span>
+    </a>
+    <a class="more-card" href="#/research/competitive">
+      <div class="kind">Research · Landscape</div>
+      <h4>Competitive positioning — where this fits</h4>
+      <p>Where the AML Open Framework sits vs. Actimize, Hawk AI, Marble, Jube, and OSS challengers, graph specialists, OSS alternatives — plus the buyer-archetype matrix mapping the four landing personas to the wins they actually care about.</p>
+      <span class="link">research/competitive → opens in viewer</span>
+    </a>
+    <a class="more-card" href="#/research/regulator-pulse">
+      <div class="kind">Research · 97-day regulator pulse</div>
+      <h4>What's moved in the last 97 days — Feb-May 2026</h4>
+      <p>31 events across 10 regulators / 8 jurisdictions. SR 26-2 effective 2026-04-17, FinCEN AML/CFT Effectiveness NPRM (comments due 2026-06-09), AMLA RTS consultation deadlines closed 2026-05-08, FATF grey-listing of Kuwait + PNG, EU's 20th Russia sanctions package. Every entry primary-source-only.</p>
+      <span class="link">research/regulator-pulse → opens in viewer</span>
+    </a>
+    <a class="more-card" href="#/research/data-problem">
+      <div class="kind">Research · Whitepaper</div>
+      <h4>Data is the AML problem — 11 faces, primary-source only</h4>
+      <p>The binding constraint underneath audit-defensibility is data — completeness, accuracy, lineage, sovereignty. Anchored in BCBS 239, FinCEN's April 2026 NPRM, OSFI E-23 / B-13, FCA Annex 1, and the largest 2024 enforcement orders (TD, RBC, HSBC's $670B unmonitored).</p>
+      <span class="link">research/data-problem → opens in viewer</span>
+    </a>
+    <a class="more-card" href="#/research/lineage">
+      <div class="kind">Research · Walk-back</div>
+      <h4>Trace every alert. Down to the row.</h4>
+      <p>The 7-link evidence chain regulators ask for and most vendors can't produce: source file path → schema hash → DuckDB table → rendered SQL → matched source rowids → alert → case → STR. Every link hash-stamped, reproducible, and</p>
+      <span class="link">research/lineage → opens in viewer</span>
+    </a>
+    <a class="more-card" href="https://github.com/tomqwu/aml_open_framework" target="_blank" rel="noopener">
+      <div class="kind">Open source · Apache 2.0</div>
+      <h4>Full source on GitHub</h4>
+      <p>2,000+ tests, 10 example specs across 5 jurisdictions, Helm chart, Terraform module, full docs. Apache 2.0 — fork it, deploy it inside your perimeter, own the audit ledger.</p>
+      <span class="link">github.com/tomqwu/aml_open_framework ↗</span>
+    </a>
+    <a class="more-card" href="v1-archive/index.html" target="_blank" rel="noopener">
+      <div class="kind">Archive · Mar 2026</div>
+      <h4>V1 deck (Mar 2026 · preserved)</h4>
+      <p>27 slides, mixed audience, before the 2026 narrative refresh. Kept here so anyone with a bookmarked link still finds it.</p>
+      <span class="link">v1-archive/ → opens in new tab</span>
+    </a>
+  </div>
+</div>
+
+<!-- BUSINESS PAGE -->
+<div class="page" id="page-business">
+  <div class="aud-tabs">
+    <button class="aud-tab active" onclick="showAud('business')">Board briefing</button>
+    <button class="aud-tab" onclick="showAud('technical')">Technical</button>
+    <button class="aud-tab" onclick="showAud('research')">Research</button>
+  </div>
+  <div class="fmt-tabs" id="fmt-business">
+    <button class="fmt-tab active" onclick="showFmt('business','live')">Live HTML</button>
+    <button class="fmt-tab" onclick="showFmt('business','video')">Video · 64 s</button>
+    <button class="fmt-tab" onclick="showFmt('business','pdf')">PDF · 12 pp</button>
+  </div>
+  <div id="business-live" class="deck-iframe-wrap"><iframe src="business/index.html" title="Board briefing deck" allowfullscreen></iframe></div>
+  <div id="business-video" style="display:none"><video controls style="width:100%;max-width:800px;border-radius:8px;border:1px solid var(--border)"><source src="business/aml-open-framework-board.mp4" type="video/mp4"><p>Video not available in this browser.</p></video><p style="margin-top:0.75rem;font-size:0.8rem;color:var(--muted)">MP4 · BGM · 7.5 MB · 64-second board video</p></div>
+  <div id="business-pdf" style="display:none"><p style="font-size:0.875rem;color:var(--muted);margin-bottom:1rem">Vector PDF · 12 pages · 1.4 MB</p><a class="btn btn-primary" href="business/aml-open-framework-board.pdf" target="_blank">Open PDF ↗</a></div>
+</div>
+
+<!-- TECHNICAL PAGE -->
+<div class="page" id="page-technical">
+  <div class="aud-tabs">
+    <button class="aud-tab" onclick="showAud('business')">Board briefing</button>
+    <button class="aud-tab active" onclick="showAud('technical')">Technical</button>
+    <button class="aud-tab" onclick="showAud('research')">Research</button>
+  </div>
+  <div class="fmt-tabs" id="fmt-technical">
+    <button class="fmt-tab active" onclick="showFmt('technical','live')">Live HTML</button>
+    <button class="fmt-tab" onclick="showFmt('technical','video')">Video · 92 s</button>
+    <button class="fmt-tab" onclick="showFmt('technical','pdf')">PDF · 22 pp</button>
+  </div>
+  <div id="technical-live" class="deck-iframe-wrap"><iframe src="technical/index.html" title="Technical deck" allowfullscreen></iframe></div>
+  <div id="technical-video" style="display:none"><video controls style="width:100%;max-width:800px;border-radius:8px;border:1px solid var(--border)"><source src="technical/aml-open-framework-technical.mp4" type="video/mp4"><p>Video not available in this browser.</p></video><p style="margin-top:0.75rem;font-size:0.8rem;color:var(--muted)">MP4 · BGM · 21 MB · 92-second walkthrough video</p></div>
+  <div id="technical-pdf" style="display:none"><p style="font-size:0.875rem;color:var(--muted);margin-bottom:1rem">Vector PDF · 22 pages · ~4 MB</p><a class="btn btn-primary" href="technical/aml-open-framework-technical.pdf" target="_blank">Open PDF ↗</a></div>
+</div>
+
+<!-- RESEARCH PAGE -->
+<div class="page" id="page-research">
+  <div class="aud-tabs">
+    <button class="aud-tab" onclick="showAud('business')">Board briefing</button>
+    <button class="aud-tab" onclick="showAud('technical')">Technical</button>
+    <button class="aud-tab active" onclick="showAud('research')">Research</button>
+  </div>
+  <div id="research-nav" style="display:block">
+    <p style="font-size:0.875rem;color:var(--muted);margin-bottom:1.5rem">Primary-source research underpinning the framework. No vendor whitepapers as load-bearing citations.</p>
+    <div class="more-grid">
+      <a class="more-card" href="#/research/process-pain">
+        <div class="kind">Research · 10 pains</div>
+        <h4>10 daily pain points an AML leader feels — 2026</h4>
+        <p>Each pain anchored in FCA/FinCEN/OSFI/FINTRAC publication. Primary-source only.</p>
+        <span class="link">research/process-pain → opens in viewer</span>
+      </a>
+      <a class="more-card" href="#/research/td-2024">
+        <div class="kind">Case study · 2024</div>
+        <h4>TD Bank · $3.09B BSA enforcement</h4>
+        <p>What the consent order actually said, what failed, and what an evidence-first program changes.</p>
+        <span class="link">research/td-2024 → opens in viewer</span>
+      </a>
+      <a class="more-card" href="#/research/fintech">
+        <div class="kind">Research · FinTech</div>
+        <h4>FinTech AML reality — 6-8 pains</h4>
+        <p>FinTech/EMI/MSB/VASP MLRO guide anchored in 2024-26 enforcement.</p>
+        <span class="link">research/fintech → opens in viewer</span>
+      </a>
+      <a class="more-card" href="#/research/competitive">
+        <div class="kind">Research · Landscape</div>
+        <h4>Competitive positioning — 2026</h4>
+        <p>Where this framework slots vs. Actimize / Hawk / Marble / Jube, plus buyer-archetype matrix.</p>
+        <span class="link">research/competitive → opens in viewer</span>
+      </a>
+      <a class="more-card" href="#/research/regulator-pulse">
+        <div class="kind">Research · 97-day regulator pulse</div>
+        <h4>What's moved in the last 97 days — Feb-May 2026</h4>
+        <p>31 events across 10 regulators / 8 jurisdictions. SR 26-2 effective 2026-04-17, FinCEN AML/CFT Effectiveness NPRM (comments due 2026-06-09), AMLA RTS consultation deadlines closed 2026-05-08, FATF grey-listing of Kuwait + PNG, EU's 20th Russia sanctions package. Every entry primary-source-only.</p>
+        <span class="link">research/regulator-pulse → opens in viewer</span>
+      </a>
+      <a class="more-card" href="#/research/architecture">
+        <div class="kind">Research · Architecture</div>
+        <h4>Architecture — 4 layers</h4>
+        <p>Policy → Generation → Runtime → Evidence. End-to-end design rationale.</p>
+        <span class="link">research/architecture → opens in viewer</span>
+      </a>
+      <a class="more-card" href="#/research/data-problem">
+        <div class="kind">Research · Whitepaper</div>
+        <h4>Data is the AML problem — 11 faces</h4>
+        <p>Data as AML constraint, anchored in BCBS 239, FinCEN Apr 2026 NPRM, OSFI E-23/B-13.</p>
+        <span class="link">research/data-problem → opens in viewer</span>
+      </a>
+      <a class="more-card" href="#/research/lineage">
+        <div class="kind">Research · Walk-back</div>
+        <h4>Lineage walk-back deep-dive</h4>
+        <p>7-link evidence chain: source file → STR, every link hash-stamped.</p>
+        <span class="link">research/lineage → opens in viewer</span>
+      </a>
+    </div>
+  </div>
+  <div id="research-viewer" style="display:none">
+    <div style="margin-bottom:1rem"><button class="btn btn-secondary" onclick="showResearchNav()" style="font-size:0.8rem;padding:0.4rem 0.9rem">← All research</button></div>
+    <div class="deck-iframe-wrap"><iframe id="research-iframe" src="" title="Research viewer" allowfullscreen></iframe></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  AML Open Framework · 2026 · <a href="https://github.com/tomqwu/aml_open_framework" target="_blank" rel="noopener">Apache 2.0</a>
+</footer>
+
+<script>
+  // ─── VIEWS ────────────────────────────────────────────────────────────────
+  const VIEWS = {
+    'home':                     { kind: 'page', page: 'home' },
+    'business':                 { kind: 'page', page: 'business' },
+    'technical':                { kind: 'page', page: 'technical' },
+    'research':                 { kind: 'page', page: 'research' },
+    'research/process-pain':    { kind: 'iframe', src: 'research/process-pain.html',        title: 'AML process pain · 10 daily pains · 2026' },
+    'research/td-2024':         { kind: 'iframe', src: 'research/td-2024.html',              title: 'TD Bank BSA enforcement · 2024 · $3.09B' },
+    'research/fintech':         { kind: 'iframe', src: 'research/fintech.html',              title: 'FinTech AML reality · 2024-26 enforcement' },
+    'research/competitive':     { kind: 'iframe', src: 'research/competitive-positioning.html', title: 'Competitive landscape · 2026 · buyer-archetype matrix' },
+    'research/regulator-pulse': { kind: 'iframe', src: 'research/regulator-pulse.html',         title: 'Regulator pulse · Feb-May 2026 · what moved in the last 97 days' },
+    'research/architecture':    { kind: 'iframe', src: 'research/architecture.html',             title: 'Architecture · 4-layer stack · one Manifest, no drift' },
+    'research/data-problem':    { kind: 'iframe', src: 'research/data-problem.html',             title: 'Data is the AML problem · 11 faces · primary source' },
+    'research/lineage':         { kind: 'iframe', src: 'research/lineage.html',                  title: 'Lineage walk-back · 7-link chain · source row to STR' },
+  };
+
+  // ─── NAV DATA ─────────────────────────────────────────────────────────────
+  const AUD_TABS = [
+    {
+      key: 'home', label: 'Home',
+      items: [],
+    },
+    {
+      key: 'business', label: 'Business',
+      items: [
+        { key: 'business',    label: 'Deck',         meta: '12 exhibits' },
+      ],
+    },
+    {
+      key: 'technical', label: 'Technical',
+      items: [
+        { key: 'technical',   label: 'Deck',         meta: '22 slides' },
+      ],
+    },
+    {
+      key: 'research', label: 'Research',
+      items: [
+        { key: 'research/process-pain', label: 'Process pain',    meta: '10 pains' },
+        { key: 'research/td-2024',      label: 'TD 2024',         meta: '$3.09B' },
+        { key: 'research/fintech',      label: 'FinTech',         meta: '6-8 pains' },
+        { key: 'competitive',     label: 'Landscape',       meta: '2026' },
+        { key: 'regulator-pulse', label: 'Reg. pulse',      meta: '97 days' },
+        { key: 'architecture',    label: 'Architecture',    meta: '4 layers' },
+        { key: 'data-problem',    label: 'Data problem',    meta: '11 faces' },
+      ],
+    },
+  ];
+
+  // ─── STATE ────────────────────────────────────────────────────────────────
+  let lastView = { business: 'business', technical: 'technical', research: 'research' };
+
+  // ─── ROUTING ──────────────────────────────────────────────────────────────
+  function route() {
+    const hash = location.hash.replace(/^#\/?/, '') || 'home';
+    const view = VIEWS[hash] || VIEWS['home'];
+    applyView(hash, view);
+  }
+
+  function applyView(key, view) {
+    // Hide all pages
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    // Update nav active state
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+    if (view.kind === 'page') {
+      const pg = document.getElementById(`page-${view.page}`);
+      if (pg) pg.classList.add('active');
+      const navLink = document.querySelector(`.nav-link[href="#/${view.page}"]`) ||
+                      document.querySelector(`.nav-link[href="#/"]`);
+      if (navLink) navLink.classList.add('active');
+      // If research sub-page, show nav
+      if (view.page === 'research') showResearchNav();
+    } else if (view.kind === 'iframe') {
+      // Determine which audience page to show
+      const aud = key.startsWith('research/') ? 'research' : key.split('/')[0];
+      const pg = document.getElementById(`page-${aud}`);
+      if (pg) pg.classList.add('active');
+      const navLink = document.querySelector(`.nav-link[href="#/${aud}"]`);
+      if (navLink) navLink.classList.add('active');
+      if (aud === 'research') {
+        showResearchViewer(view.src, view.title);
+      }
+      lastView[aud] = key;
+    }
+  }
+
+  // ─── AUDIENCE TABS ────────────────────────────────────────────────────────
+  function showAud(aud) {
+    location.hash = `/${aud}`;
+  }
+
+  // ─── FORMAT TABS ──────────────────────────────────────────────────────────
+  function showFmt(aud, fmt) {
+    const tabs = document.querySelectorAll(`#fmt-${aud} .fmt-tab`);
+    const fmts = ['live', 'video', 'pdf'];
+    tabs.forEach((t, i) => t.classList.toggle('active', fmts[i] === fmt));
+    fmts.forEach(f => {
+      const el = document.getElementById(`${aud}-${f}`);
+      if (el) el.style.display = f === fmt ? 'block' : 'none';
+    });
+  }
+
+  // ─── RESEARCH VIEWER ──────────────────────────────────────────────────────
+  function showResearchNav() {
+    document.getElementById('research-nav').style.display = 'block';
+    document.getElementById('research-viewer').style.display = 'none';
+  }
+  function showResearchViewer(src, title) {
+    document.getElementById('research-nav').style.display = 'none';
+    const rv = document.getElementById('research-viewer');
+    rv.style.display = 'block';
+    const iframe = document.getElementById('research-iframe');
+    if (iframe.src !== location.origin + '/' + src) iframe.src = src;
+  }
+
+  // ─── FULLSCREEN VIEWER ────────────────────────────────────────────────────
+  function openViewer(src, title) {
+    document.getElementById('viewer-title').textContent = title;
+    document.getElementById('viewer-frame').src = src;
+    document.getElementById('viewer').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeViewer() {
+    document.getElementById('viewer').classList.remove('open');
+    document.getElementById('viewer-frame').src = '';
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeViewer(); });
+
+  // ─── HASH ROUTING ─────────────────────────────────────────────────────────
+  window.addEventListener('hashchange', route);
+
+  // ─── RESEARCH CARD CLICKS ─────────────────────────────────────────────────
+  document.querySelectorAll('.more-card[href^="#/research/"]').forEach(card => {
+    card.addEventListener('click', e => {
+      e.preventDefault();
+      location.hash = card.getAttribute('href').replace('#', '');
+    });
+  });
+
+  // ─── RESTORE LAST VIEW PER AUDIENCE ──────────────────────────────────────
+  document.querySelectorAll('.aud-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const aud = tab.textContent.trim().toLowerCase().replace(/\s+/g, '');
+      const audKey = aud === 'boardbriefing' ? 'business' : aud === 'technical' ? 'technical' : 'research';
+      const target = lastView[audKey] || audKey;
+      location.hash = `/${target}`;
+    });
+  });
+
+  // ─── NAV LINKS for audience pages ────────────────────────────────────────
+  ['business', 'technical', 'research'].forEach(aud => {
+    const link = document.querySelector(`.nav-link[href="#/${aud}"]`);
+    if (!link) return;
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const target = lastView[aud] || aud;
+      if (location.hash === `#/${target}`) { route(); return; }
+      location.hash = `/${target}`;
+    });
+  });
+
+  // ─── INIT ─────────────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    // Sync nav active states with audience tabs
+    ['business', 'technical', 'research'].forEach(aud => {
+      const a = document.querySelector(`.nav-link[href="#/${aud}"]`);
+      if (a) a.href = `#/${aud}/${lastView[aud]}`;
+    });
+    route();
+  });
+  </script>
+
+</body>
+</html>
